@@ -46,7 +46,11 @@ public class User extends BaseModel {
 		return this.account;
 	}
 
+	/**
+	 * 比較密碼Hash是否相同
+	 */
 	public boolean comparePwdHash(String pwdHash) {
-		return this.pwdHash == pwdHash;
+		// 引用類型之間的值比較要使用 equals
+		return this.pwdHash.equals(pwdHash);
 	}
 }
