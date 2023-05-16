@@ -1,0 +1,136 @@
+package com.mask.todolist.util;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.function.Function;
+
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import com.mask.todolist.exception.error.AuthException;
+import com.mask.todolist.model.User;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
+
+/**
+ * JWT 各種函式
+ *
+ */
+@Component
+public class JwtUtil {
+
+	private String secret = "Mask Spring-Boot";
+	public final long expDay = 7;
+	private String issuer = "https://mask.com";
+
+	/**
+	 * 產生 Token
+	 */
+	public String generateToken(User user) {
+
+		// 設置到期日
+		LocalDateTime expTime = LocalDateTime.now().plusDays(expDay);
+		Instant exp = expTime.atZone(ZoneId.systemDefault()).toInstant();
+
+		// 設置主題
+		Claims claims = Jwts.claims().setSubject(user.getAccount());
+		// 設置 Token 內容
+		claims.put("id", user.getId());
+		claims.put("account", user.getAccount());
+		claims.put("name", user.getName());
+
+		return Jwts.builder()
+				// 設定發行方
+				.setIssuer(issuer)
+				// 放入內容
+				.setClaims(claims)
+				// 設定到期
+				.setExpiration(Date.from(exp))
+				// 加密方式與密鑰
+				.signWith(SignatureAlgorithm.HS256, secret)
+				// 轉成字串
+				.compact();
+	}
+
+	/**
+	 * 驗證 Token
+	 */
+	public boolean checkToken(String token) throws Exception {
+		System.out.println("CheckToken");
+
+		try {
+			// 傳入加密後的 JWT Token
+			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+			System.out.println(11);
+
+			return true;
+		} catch (Exception e) {
+			throw new AuthException().AuthFail(e);
+		}
+
+	}
+
+	/**
+	 * 取得Requet 中的 Token
+	 */
+	public String getToken(HttpServletRequest req) {
+		// 從 header 取得
+		final String bearerToken = req.getHeader("Authorization");
+
+		// hasText() 檢查傳入的 String 是否為null、是否為空、是否都是空格
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+
+			// 返回除了前綴的主要token內容
+			return bearerToken.substring(7);
+		}
+
+		return null;
+	}
+
+	/**
+	 * 取得oauth2 Jwt
+	 */
+	public Jwt getTokenJwt(String token) {
+		JwtDecoder decoder = JwtDecoders.fromIssuerLocation(issuer);
+		return decoder.decode(token);
+	}
+
+	/**
+	 * 取得token存放的資料
+	 */
+	public Claims extractAllClaims(String token) {
+		return Jwts.parser().setSigningKey(secret).parseClaimsJwt(token).getBody();
+	}
+
+	/**
+	 * 取得token裡的id
+	 */
+	public Long extractID(String token) {
+		return (Long) Jwts.parser()
+				.setSigningKey(secret).parseClaimsJwt(token)
+				.getBody().get("id");
+	}
+
+	/**
+	 * 從Token取得特定的聲明
+	 */
+	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+		final Claims claims = extractAllClaims(token);
+		return claimsResolver.apply(claims);
+	}
+
+	/**
+	 * 取得過期時間
+	 */
+	public Date getExp(String token) {
+		return extractClaim(token, Claims::getExpiration);
+	}
+}

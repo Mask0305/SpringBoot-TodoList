@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mask.todolist.controller.dto.Response;
 import com.mask.todolist.controller.dto.UserDto;
+import com.mask.todolist.controller.dto.UserLoginDto;
 import com.mask.todolist.model.User;
 import com.mask.todolist.service.UserService;
 import com.mask.todolist.util.Hash;
+import com.mask.todolist.util.JwtUtil;
 
 import jakarta.validation.Valid;
 
@@ -51,6 +56,56 @@ public class UserController {
 		}
 
 		return new Response();
+	}
+
+	/**
+	 * 
+	 */
+	@PostMapping("/login")
+	public Response UserLogin(@Valid @RequestBody UserLoginDto data, BindingResult bindingResult) {
+
+		if (bindingResult.hasErrors()) {
+			return new Response().Error().ErrorMessage(bindingResult.getAllErrors());
+		}
+
+		try {
+
+			// 使用者登入
+			User user = userSvc.UserLogin(data.account, data.password);
+
+			// 產生 Token
+			String token = userSvc.GenerateToken(user);
+
+			Map<String, String> res = new HashMap<>();
+			res.put("token", token);
+
+			return new Response().AddData(res);
+		} catch (Exception e) {
+			return new Response().Error().ErrorMessage(e);
+		}
+
+	}
+
+	/**
+	 *
+	 */
+	@GetMapping("/info")
+	public Response UserInfo(@Valid @RequestBody UserLoginDto data, BindingResult bindingResult) {
+
+		JwtUtil jwtUtil = new JwtUtil();
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String token = auth.getName();
+		Long userId = jwtUtil.extractID(token);
+
+		try {
+			User user = userSvc.GetUserInfoById(userId);
+			return new Response().AddData(user);
+		} catch (Exception e) {
+
+		}
+
+		return new Response().Error();
 	}
 
 }
