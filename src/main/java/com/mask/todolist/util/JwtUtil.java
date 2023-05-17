@@ -29,7 +29,7 @@ public class JwtUtil {
 
 	private String secret = "Mask Spring-Boot";
 	public final long expDay = 7;
-	private String issuer = "https://mask.com";
+	private String issuer = "http://mask.com";
 
 	/**
 	 * 產生 Token
@@ -48,10 +48,10 @@ public class JwtUtil {
 		claims.put("name", user.getName());
 
 		return Jwts.builder()
-				// 設定發行方
-				.setIssuer(issuer)
 				// 放入內容
 				.setClaims(claims)
+				// 設定發行方
+				.setIssuer(issuer)
 				// 設定到期
 				.setExpiration(Date.from(exp))
 				// 加密方式與密鑰
@@ -69,7 +69,7 @@ public class JwtUtil {
 		try {
 			// 傳入加密後的 JWT Token
 			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-			System.out.println(11);
+			System.out.println("success");
 
 			return true;
 		} catch (Exception e) {
@@ -96,31 +96,25 @@ public class JwtUtil {
 	}
 
 	/**
-	 * 取得oauth2 Jwt
-	 */
-	public Jwt getTokenJwt(String token) {
-		JwtDecoder decoder = JwtDecoders.fromIssuerLocation(issuer);
-		return decoder.decode(token);
-	}
-
-	/**
 	 * 取得token存放的資料
 	 */
 	public Claims extractAllClaims(String token) {
-		return Jwts.parser().setSigningKey(secret).parseClaimsJwt(token).getBody();
+		// 注意使用的parseClaimsJw's'，不是parseClaimsJw't'
+		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
 	/**
 	 * 取得token裡的id
 	 */
 	public Long extractID(String token) {
-		return (Long) Jwts.parser()
-				.setSigningKey(secret).parseClaimsJwt(token)
-				.getBody().get("id");
+		// 解出來的值只能是 Object
+		Object id = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("id");
+		// Object自帶toString()，再轉成Long
+		return Long.valueOf(id.toString());
 	}
 
 	/**
-	 * 從Token取得特定的聲明
+	 * 從Token取得指定的值
 	 */
 	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = extractAllClaims(token);

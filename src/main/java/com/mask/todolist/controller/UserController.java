@@ -90,22 +90,25 @@ public class UserController {
 	 *
 	 */
 	@GetMapping("/info")
-	public Response UserInfo(@Valid @RequestBody UserLoginDto data, BindingResult bindingResult) {
+	public Response UserInfo() {
+		System.out.println("/info");
 
 		JwtUtil jwtUtil = new JwtUtil();
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String token = auth.getName();
-		Long userId = jwtUtil.extractID(token);
-
 		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			String token = (String) auth.getCredentials();
+			Long userId = jwtUtil.extractID(token);
+			System.out.println(1);
+
 			User user = userSvc.GetUserInfoById(userId);
 			return new Response().AddData(user);
 		} catch (Exception e) {
 
+			return new Response().Error().ErrorMessage(e);
+
 		}
 
-		return new Response().Error();
 	}
 
 }

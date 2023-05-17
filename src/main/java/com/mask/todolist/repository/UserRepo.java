@@ -6,9 +6,8 @@ import org.springframework.stereotype.Repository;
 import com.mask.todolist.model.User;
 
 @Repository
-public interface UserRepo extends CrudRepository<User, Integer> {
+public interface UserRepo extends CrudRepository<User, Long> {
 
 	public User findByAccountAndPwdHash(String account, String pwdHash);
 
-	public User findById(Long id);
 }

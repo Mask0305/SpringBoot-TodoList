@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -38,18 +36,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		// 取得token
 		String token = jwtUtil.getToken(req);
 
+		if (token == null) {
+			filterChain.doFilter(req, res);
+			return;
+		}
+
 		// 驗證 Token
 		try {
 
 			boolean valid = jwtUtil.checkToken(token);
 
 			if (valid) {
-				Jwt jwt = jwtUtil.getTokenJwt(token);
-				JwtAuthenticationToken auth = new JwtAuthenticationToken(jwt, null, token);
-
+				System.out.println(12);
+				JwtAuthToken auth = new JwtAuthToken(token);
 				SecurityContextHolder.getContext().setAuthentication(auth);
+				System.out.println(13);
 			}
-			filterChain.doFilter(req, res);
 		} catch (Exception e) {
 
 			// status code 401
@@ -70,7 +72,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			res.getWriter().flush();
 			// 關閉輸出流
 			res.getWriter().close();
+			return;
 		}
+
+		filterChain.doFilter(req, res);
 
 	}
 

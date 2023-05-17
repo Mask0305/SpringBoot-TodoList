@@ -12,6 +12,8 @@ import com.mask.todolist.repository.UserRepo;
 import com.mask.todolist.util.Hash;
 import com.mask.todolist.util.JwtUtil;
 
+import io.jsonwebtoken.Claims;
+
 @Service
 public class UserService {
 
@@ -55,6 +57,9 @@ public class UserService {
 		// 產生 Token
 		String token = jwtUtil.generateToken(user);
 
+		String e = jwtUtil.extractClaim(token, Claims::getIssuer);
+		System.out.println(e);
+
 		// 存到Redis
 		redisRepo.save(user.getId().toString(), token, Duration.ofDays(jwtUtil.expDay));
 
@@ -66,7 +71,10 @@ public class UserService {
 	 */
 	public User GetUserInfoById(Long id) throws Exception {
 
-		User user = repo.findById(id);
+		// orElse()用來設置當findById()找不到時的返回結果
+		// findById()的Optional<T>類是用於處理對象可能為null容器類
+		User user = repo.findById(id).orElse(null);
+		System.out.println(2);
 
 		if (user == null) {
 			throw new UserException().NotFoundUser(new IllegalArgumentException());

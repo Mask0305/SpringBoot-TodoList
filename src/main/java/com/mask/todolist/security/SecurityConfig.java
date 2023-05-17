@@ -33,7 +33,7 @@ public class SecurityConfig {
 				// 開始設置Request授權規則
 				.authorizeHttpRequests()
 				// 允許請求，即不受middleware限制
-				.requestMatchers(userAllowPath).permitAll();
+				.requestMatchers("/user/**").permitAll();
 
 		/*
 		 * 將自定義的過濾器放在User..Filter之前
