@@ -6,9 +6,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.function.Function;
 
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
