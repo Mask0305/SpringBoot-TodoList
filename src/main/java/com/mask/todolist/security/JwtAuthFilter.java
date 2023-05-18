@@ -1,6 +1,8 @@
 package com.mask.todolist.security;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +38,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		// 取得token
 		String token = jwtUtil.getToken(req);
 
-		if (token == null) {
+		// 跳過
+		if (SkipPath(req.getRequestURI())) {
 			filterChain.doFilter(req, res);
 			return;
 		}
@@ -47,12 +50,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			boolean valid = jwtUtil.checkToken(token);
 
 			if (valid) {
-				System.out.println(12);
+				// 建立完成驗證的 Authentication
 				JwtAuthToken auth = new JwtAuthToken(token);
+				// 存入 Context
 				SecurityContextHolder.getContext().setAuthentication(auth);
-				System.out.println(13);
 			}
 		} catch (Exception e) {
+			System.out.println(e);
 
 			// status code 401
 			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -77,6 +81,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 		filterChain.doFilter(req, res);
 
+	}
+
+	/**
+	 * 確認此次請求是否需要驗證
+	 */
+	public boolean SkipPath(String url) {
+		String[] needCheckURL = {
+				"/user/info",
+		};
+		List<String> list = Arrays.asList(needCheckURL);
+
+		// 反轉boolean，不在的為true
+		return !list.contains(url);
 	}
 
 }

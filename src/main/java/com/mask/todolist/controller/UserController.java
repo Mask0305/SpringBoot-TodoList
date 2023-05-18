@@ -97,9 +97,7 @@ public class UserController {
 
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String token = (String) auth.getCredentials();
-			Long userId = jwtUtil.extractID(token);
-			System.out.println(1);
+			Long userId = (Long) auth.getPrincipal();
 
 			User user = userSvc.GetUserInfoById(userId);
 			return new Response().AddData(user);

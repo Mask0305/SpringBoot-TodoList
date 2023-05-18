@@ -69,13 +69,8 @@
         	</dependency>
 
 
-	<!--Spring Security-->
-		<dependency>
-   		 	<groupId>org.springframework.boot</groupId>
-    			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency>
-
-	<!--處理jjwt依賴的DatatypeConverter被標記過時的問題-->
+	
+		<!--處理jjwt依賴的DatatypeConverter被標記過時的問題-->
 		<dependency>
            		<groupId>javax.xml.bind</groupId>
             		<artifactId>jaxb-api</artifactId>

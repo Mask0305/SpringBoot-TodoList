@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * JWT 各種函式
- *
  */
 @Component
 public class JwtUtil {
@@ -37,20 +36,23 @@ public class JwtUtil {
 		LocalDateTime expTime = LocalDateTime.now().plusDays(expDay);
 		Instant exp = expTime.atZone(ZoneId.systemDefault()).toInstant();
 
+		// 初始化Body
+		Claims claims = Jwts.claims();
+
 		// 設置主題
-		Claims claims = Jwts.claims().setSubject(user.getAccount());
+		claims.setSubject(user.getAccount());
 		// 設置 Token 內容
 		claims.put("id", user.getId());
 		claims.put("account", user.getAccount());
 		claims.put("name", user.getName());
+		// 設置發行方
+		claims.setIssuer(issuer);
+		// 設定到期
+		claims.setExpiration(Date.from(exp));
 
 		return Jwts.builder()
 				// 放入內容
 				.setClaims(claims)
-				// 設定發行方
-				.setIssuer(issuer)
-				// 設定到期
-				.setExpiration(Date.from(exp))
 				// 加密方式與密鑰
 				.signWith(SignatureAlgorithm.HS256, secret)
 				// 轉成字串
@@ -66,7 +68,9 @@ public class JwtUtil {
 		try {
 			// 傳入加密後的 JWT Token
 			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-			System.out.println("success");
+
+			// 檢查到期日
+			isExpired(token);
 
 			return true;
 		} catch (Exception e) {
@@ -93,14 +97,6 @@ public class JwtUtil {
 	}
 
 	/**
-	 * 取得token存放的資料
-	 */
-	public Claims extractAllClaims(String token) {
-		// 注意使用的parseClaimsJw's'，不是parseClaimsJw't'
-		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-	}
-
-	/**
 	 * 取得token裡的id
 	 */
 	public Long extractID(String token) {
@@ -108,6 +104,14 @@ public class JwtUtil {
 		Object id = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("id");
 		// Object自帶toString()，再轉成Long
 		return Long.valueOf(id.toString());
+	}
+
+	/**
+	 * 取得token存放的資料
+	 */
+	public Claims extractAllClaims(String token) {
+		// 注意使用的parseClaimsJw's'，不是parseClaimsJw't'
+		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
 	/**
@@ -119,9 +123,14 @@ public class JwtUtil {
 	}
 
 	/**
-	 * 取得過期時間
+	 * 驗證 Token 是否過期
 	 */
-	public Date getExp(String token) {
-		return extractClaim(token, Claims::getExpiration);
+	public void isExpired(String token) throws Exception {
+		// 取得到期日
+		Date exp = extractClaim(token, Claims::getExpiration);
+		if (exp.before(new Date())) {
+			throw new AuthException().AuthExpired(new IllegalAccessException());
+		}
 	}
+
 }
