@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-	private final JwtUtil jwtUtil = new JwtUtil();
+	@Autowired
+	private JwtUtil jwtUtil;
 
 	/**
 	 * 主要的中間層邏輯
@@ -51,7 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 			if (valid) {
 				// 建立完成驗證的 Authentication
-				JwtAuthToken auth = new JwtAuthToken(token);
+				JwtAuthToken auth = new JwtAuthToken(token, jwtUtil.extractID(token));
 				// 存入 Context
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}

@@ -6,11 +6,13 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.mask.todolist.exception.error.AuthException;
 import com.mask.todolist.model.User;
+import com.mask.todolist.repository.RedisRepo;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -26,6 +28,9 @@ public class JwtUtil {
 	private String secret = "Mask Spring-Boot";
 	public final long expDay = 7;
 	private String issuer = "http://mask.com";
+
+	@Autowired
+	private RedisRepo redisRepo;
 
 	/**
 	 * 產生 Token
@@ -63,24 +68,27 @@ public class JwtUtil {
 	 * 驗證 Token
 	 */
 	public boolean checkToken(String token) throws Exception {
-		System.out.println("CheckToken");
 
 		try {
-			// 傳入加密後的 JWT Token
+			// 傳入加密後的JWT Token
 			Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
 			// 檢查到期日
 			isExpired(token);
 
+			// 檢查是否有在Redis中
+			isExistInRedis(token);
+
 			return true;
 		} catch (Exception e) {
+			System.out.println(e);
 			throw new AuthException().AuthFail(e);
 		}
 
 	}
 
 	/**
-	 * 取得Requet 中的 Token
+	 * 取得Requet中的Token
 	 */
 	public String getToken(HttpServletRequest req) {
 		// 從 header 取得
@@ -131,6 +139,24 @@ public class JwtUtil {
 		if (exp.before(new Date())) {
 			throw new AuthException().AuthExpired(new IllegalAccessException());
 		}
+	}
+
+	/**
+	 * 檢查Token是否有在Redis中
+	 */
+	public void isExistInRedis(String token) throws Exception {
+		// 取出token中的使用者編號
+		Long id = extractID(token);
+		System.out.println("ID:" + id);
+		System.out.println(this.redisRepo);
+		// 查詢redis
+		String tokenInRedis = redisRepo.get(id.toString());
+		System.out.println("token: " + tokenInRedis);
+		// 比對token是否相同
+		if (!tokenInRedis.equals(token)) {
+			throw new IllegalAccessError();
+		}
+
 	}
 
 }

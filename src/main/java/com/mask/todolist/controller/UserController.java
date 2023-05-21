@@ -19,7 +19,6 @@ import com.mask.todolist.controller.dto.UserLoginDto;
 import com.mask.todolist.model.User;
 import com.mask.todolist.service.UserService;
 import com.mask.todolist.util.Hash;
-import com.mask.todolist.util.JwtUtil;
 
 import jakarta.validation.Valid;
 
@@ -92,8 +91,6 @@ public class UserController {
 	@GetMapping("/info")
 	public Response UserInfo() {
 		System.out.println("/info");
-
-		JwtUtil jwtUtil = new JwtUtil();
 
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();

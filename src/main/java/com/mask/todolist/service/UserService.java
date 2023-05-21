@@ -12,8 +12,6 @@ import com.mask.todolist.repository.UserRepo;
 import com.mask.todolist.util.Hash;
 import com.mask.todolist.util.JwtUtil;
 
-import io.jsonwebtoken.Claims;
-
 @Service
 public class UserService {
 
@@ -21,6 +19,14 @@ public class UserService {
 	UserRepo repo;
 	@Autowired
 	RedisRepo redisRepo;
+	@Autowired
+	JwtUtil jwtUtil;
+
+	public UserService() {
+		System.out.println("Init Service");
+		System.out.println(this.redisRepo);
+
+	}
 
 	/**
 	 * 註冊使用者
@@ -53,12 +59,8 @@ public class UserService {
 	 */
 	public String GenerateToken(User user) {
 
-		JwtUtil jwtUtil = new JwtUtil();
 		// 產生 Token
 		String token = jwtUtil.generateToken(user);
-
-		String e = jwtUtil.extractClaim(token, Claims::getIssuer);
-		System.out.println(e);
 
 		// 存到Redis
 		redisRepo.save(user.getId().toString(), token, Duration.ofDays(jwtUtil.expDay));
@@ -74,7 +76,6 @@ public class UserService {
 		// orElse()用來設置當findById()找不到時的返回結果
 		// findById()的Optional<T>類是用於處理對象可能為null容器類
 		User user = repo.findById(id).orElse(null);
-		System.out.println(2);
 
 		if (user == null) {
 			throw new UserException().NotFoundUser(new IllegalArgumentException());

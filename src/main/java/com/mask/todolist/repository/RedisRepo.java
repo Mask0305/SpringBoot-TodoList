@@ -11,6 +11,7 @@ public class RedisRepo {
 	private final RedisTemplate<String, String> redisTemplate;
 
 	public RedisRepo(RedisTemplate<String, String> redisTemplate) {
+		System.out.println("Init RedisRepo");
 		this.redisTemplate = redisTemplate;
 	}
 
@@ -23,6 +24,7 @@ public class RedisRepo {
 	}
 
 	public String get(String key) {
+		System.out.println(key);
 		return redisTemplate.opsForValue().get(key);
 	}
 

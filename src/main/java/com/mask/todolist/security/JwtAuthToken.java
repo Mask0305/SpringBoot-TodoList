@@ -2,17 +2,15 @@ package com.mask.todolist.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-import com.mask.todolist.util.JwtUtil;
-
 public class JwtAuthToken extends AbstractAuthenticationToken {
 
-	private final JwtUtil jwtUtil = new JwtUtil();
-
 	private String token;
+	private Long principal;
 
-	public JwtAuthToken(String token) {
+	public JwtAuthToken(String token, Long id) {
 		super(null);
 		this.token = token;
+		this.principal = id;
 	}
 
 	/**
@@ -27,7 +25,7 @@ public class JwtAuthToken extends AbstractAuthenticationToken {
 	 * 身份資訊,使用者編號
 	 */
 	@Override
-	public Object getPrincipal() {
-		return jwtUtil.extractID(token);
+	public Long getPrincipal() {
+		return this.principal;
 	}
 }
