@@ -158,4 +158,23 @@ public class UserController {
 
 	}
 
+	/**
+	 * 登出
+	 */
+	@PostMapping("/logout")
+	public Response Logout() {
+
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Long userId = (Long) auth.getPrincipal();
+
+			userSvc.Logout(userId);
+			return new Response();
+		} catch (Exception e) {
+			return new Response().Error().ErrorMessage(e);
+
+		}
+
+	}
+
 }

@@ -62,7 +62,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 		} catch (Exception e) {
-			System.out.println(e);
 
 			// status code 401
 			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -97,6 +96,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				"/user/info",
 				"/user/info/name",
 				"/user/info/password",
+				"/user/logout"
 		};
 		List<String> list = Arrays.asList(needCheckURL);
 

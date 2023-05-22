@@ -150,11 +150,13 @@ public class JwtUtil {
 	public void isExistInRedis(String token) throws Exception {
 		// 取出token中的使用者編號
 		Long id = extractID(token);
+
 		// 查詢redis
 		String tokenInRedis = redisRepo.get(id.toString());
+
 		// 比對token是否相同
 		if (!tokenInRedis.equals(token)) {
-			throw new IllegalAccessError();
+			throw new IllegalAccessException("權杖失效");
 		}
 
 	}

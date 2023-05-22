@@ -28,8 +28,8 @@ public class RedisRepo {
 		return redisTemplate.opsForValue().get(key);
 	}
 
-	public void del(String key) {
-		redisTemplate.delete(key);
+	public boolean del(String key) {
+		return redisTemplate.delete(key);
 	}
 
 }

@@ -121,4 +121,11 @@ public class UserService {
 		}
 	}
 
+	/**
+	 * 登出
+	 */
+	public void Logout(Long id) throws Exception {
+		redisRepo.del(id.toString());
+	}
+
 }
