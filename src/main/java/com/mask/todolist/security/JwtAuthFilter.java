@@ -25,8 +25,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+	private final JwtUtil jwtUtil;
+
 	@Autowired
-	private JwtUtil jwtUtil;
+	public JwtAuthFilter(JwtUtil jwtUtil) {
+		this.jwtUtil = jwtUtil;
+	}
 
 	/**
 	 * 主要的中間層邏輯

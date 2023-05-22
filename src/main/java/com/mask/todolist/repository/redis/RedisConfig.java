@@ -9,13 +9,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+	/**
+	 * Redis工具類
+	 * RedisTemplate<String,String> 表示儲存的KV都是Stirng
+	 */
 	@Bean
 	public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory conn) {
 
 		RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
 
 		redisTemplate.setConnectionFactory(conn);
+		// 將Key序列化為String
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		// 將Value序列化為String
 		redisTemplate.setValueSerializer(new StringRedisSerializer());
 
 		return redisTemplate;

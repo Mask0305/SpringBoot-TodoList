@@ -2,6 +2,7 @@ package com.mask.todolist.repository;
 
 import java.time.Duration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -10,8 +11,8 @@ public class RedisRepo {
 
 	private final RedisTemplate<String, String> redisTemplate;
 
+	@Autowired
 	public RedisRepo(RedisTemplate<String, String> redisTemplate) {
-		System.out.println("Init RedisRepo");
 		this.redisTemplate = redisTemplate;
 	}
 
@@ -24,7 +25,6 @@ public class RedisRepo {
 	}
 
 	public String get(String key) {
-		System.out.println(key);
 		return redisTemplate.opsForValue().get(key);
 	}
 
