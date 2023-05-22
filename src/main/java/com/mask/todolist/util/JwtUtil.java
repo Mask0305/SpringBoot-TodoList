@@ -29,8 +29,12 @@ public class JwtUtil {
 	public final long expDay = 7;
 	private String issuer = "http://mask.com";
 
-	@Autowired
 	private RedisRepo redisRepo;
+
+	@Autowired
+	public JwtUtil(RedisRepo redisRepo) {
+		this.redisRepo = redisRepo;
+	}
 
 	/**
 	 * 產生 Token
@@ -81,7 +85,6 @@ public class JwtUtil {
 
 			return true;
 		} catch (Exception e) {
-			System.out.println(e);
 			throw new AuthException().AuthFail(e);
 		}
 
@@ -147,11 +150,8 @@ public class JwtUtil {
 	public void isExistInRedis(String token) throws Exception {
 		// 取出token中的使用者編號
 		Long id = extractID(token);
-		System.out.println("ID:" + id);
-		System.out.println(this.redisRepo);
 		// 查詢redis
 		String tokenInRedis = redisRepo.get(id.toString());
-		System.out.println("token: " + tokenInRedis);
 		// 比對token是否相同
 		if (!tokenInRedis.equals(token)) {
 			throw new IllegalAccessError();

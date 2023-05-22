@@ -86,7 +86,7 @@ public class UserController {
 	}
 
 	/**
-	 *
+	 * 取得使用者資訊
 	 */
 	@GetMapping("/info")
 	public Response UserInfo() {
