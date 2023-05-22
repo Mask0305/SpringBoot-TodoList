@@ -16,16 +16,16 @@ import com.mask.todolist.util.JwtUtil;
 public class UserService {
 
 	@Autowired
-	UserRepo repo;
+	private final UserRepo repo;
 	@Autowired
-	RedisRepo redisRepo;
+	private final RedisRepo redisRepo;
 	@Autowired
-	JwtUtil jwtUtil;
+	private final JwtUtil jwtUtil;
 
-	public UserService() {
-		System.out.println("Init Service");
-		System.out.println(this.redisRepo);
-
+	public UserService(UserRepo repo, RedisRepo redisRepo, JwtUtil jwtUtil) {
+		this.repo = repo;
+		this.redisRepo = redisRepo;
+		this.jwtUtil = jwtUtil;
 	}
 
 	/**
