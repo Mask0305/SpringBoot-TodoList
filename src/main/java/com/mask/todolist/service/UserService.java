@@ -15,13 +15,11 @@ import com.mask.todolist.util.JwtUtil;
 @Service
 public class UserService {
 
-	@Autowired
 	private final UserRepo repo;
-	@Autowired
 	private final RedisRepo redisRepo;
-	@Autowired
 	private final JwtUtil jwtUtil;
 
+	@Autowired
 	public UserService(UserRepo repo, RedisRepo redisRepo, JwtUtil jwtUtil) {
 		this.repo = repo;
 		this.redisRepo = redisRepo;

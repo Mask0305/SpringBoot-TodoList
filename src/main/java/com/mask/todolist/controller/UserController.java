@@ -58,7 +58,7 @@ public class UserController {
 	}
 
 	/**
-	 * 
+	 * 使用者登入
 	 */
 	@PostMapping("/login")
 	public Response UserLogin(@Valid @RequestBody UserLoginDto data, BindingResult bindingResult) {
@@ -90,7 +90,6 @@ public class UserController {
 	 */
 	@GetMapping("/info")
 	public Response UserInfo() {
-		System.out.println("/info");
 
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
