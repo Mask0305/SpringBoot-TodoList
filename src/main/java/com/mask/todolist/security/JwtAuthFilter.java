@@ -95,6 +95,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	public boolean SkipPath(String url) {
 		String[] needCheckURL = {
 				"/user/info",
+				"/user/info/name",
+				"/user/info/password",
 		};
 		List<String> list = Arrays.asList(needCheckURL);
 

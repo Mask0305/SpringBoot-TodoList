@@ -17,4 +17,8 @@ public class UserException extends BaseException {
 	public UserException NotFoundUser(Throwable e) {
 		return new UserException("使用者不存在", e);
 	}
+
+	public UserException UpdateFail(Throwable e) {
+		return new UserException("更新使用者失敗", e);
+	}
 }

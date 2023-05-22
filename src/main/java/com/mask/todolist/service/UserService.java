@@ -81,4 +81,44 @@ public class UserService {
 
 		return user;
 	}
+
+	/**
+	 * 更新使用者名稱
+	 */
+	public void UpdateUserName(Long id, String name) throws Exception {
+		User user = repo.findById(id).orElse(null);
+		if (user == null) {
+			throw new UserException().NotFoundUser(new IllegalArgumentException());
+		}
+
+		user.setName(name);
+
+		try {
+			repo.save(user);
+		} catch (Exception e) {
+			throw new UserException().UpdateFail(e);
+		}
+	}
+
+	/**
+	 * 更新密碼
+	 */
+	public void UpdateUserPassword(Long id, String password) throws Exception {
+		User user = repo.findById(id).orElse(null);
+		if (user == null) {
+			throw new UserException().NotFoundUser(new IllegalArgumentException());
+		}
+
+		// 產生新的密碼Hash
+		String newPwdHash = Hash.generateHash(user.getAccount(), password);
+
+		user.setPwdHash(newPwdHash);
+
+		try {
+			repo.save(user);
+		} catch (Exception e) {
+			throw new UserException().UpdateFail(e);
+		}
+	}
+
 }
