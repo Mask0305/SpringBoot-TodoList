@@ -2,11 +2,16 @@ package com.mask.todolist.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table
 public class User extends BaseModel {
+
+	@Column
+	@OneToMany(mappedBy = "userId")
+	private long id;
 
 	/**
 	 * 使用者名稱
