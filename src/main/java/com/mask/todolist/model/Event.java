@@ -2,6 +2,9 @@ package com.mask.todolist.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -12,6 +15,10 @@ import jakarta.persistence.Table;
 @Entity
 @Table
 public class Event extends BaseModel {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	/**
 	 * 使用者
@@ -47,6 +54,10 @@ public class Event extends BaseModel {
 		this.content = content;
 		this.user = user;
 		this.stats = EventStats.ACTION;
+	}
+
+	public Long getId() {
+		return this.id;
 	}
 
 	public String getTitle() {

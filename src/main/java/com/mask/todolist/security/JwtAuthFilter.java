@@ -96,7 +96,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				"/user/info",
 				"/user/info/name",
 				"/user/info/password",
-				"/user/logout"
+				"/user/logout",
+				// ------
+				"/event/create",
 		};
 		List<String> list = Arrays.asList(needCheckURL);
 

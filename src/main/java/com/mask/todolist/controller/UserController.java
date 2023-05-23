@@ -31,7 +31,7 @@ public class UserController {
 	Map<String, String> message = new HashMap<>();
 
 	@Autowired
-	UserService userSvc;
+	private UserService userSvc;
 
 	/**
 	 * 註冊使用者

@@ -2,15 +2,17 @@ package com.mask.todolist.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table
 public class User extends BaseModel {
 
-	@Column
-	@OneToMany(mappedBy = "userId")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	/**
@@ -41,6 +43,10 @@ public class User extends BaseModel {
 
 	public void setPwdHash(String pwdHash) {
 		this.pwdHash = pwdHash;
+	}
+
+	public Long getId() {
+		return this.id;
 	}
 
 	public String getName() {
