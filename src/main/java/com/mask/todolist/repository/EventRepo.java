@@ -12,4 +12,6 @@ public interface EventRepo extends CrudRepository<Event, Long> {
 
 	public List<Event> findAllByUserId(Long userId);
 
+	public Event findByIdAndUserId(Long id, Long userId);
+
 }

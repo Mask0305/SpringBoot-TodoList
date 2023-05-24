@@ -53,4 +53,17 @@ public class EventService {
 		}
 	}
 
+	/**
+	 * 編輯待辦事項
+	 */
+	public void UpdateEvent(String title, String content, Long eventId, Long userId) throws Exception {
+
+		Event event = eventRepo.findByIdAndUserId(eventId, userId);
+
+		event.setTitle(title);
+		event.setContent(content);
+
+		eventRepo.save(event);
+	}
+
 }

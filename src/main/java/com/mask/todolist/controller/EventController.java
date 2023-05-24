@@ -9,12 +9,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mask.todolist.controller.dto.EventDto;
+import com.mask.todolist.controller.dto.EventUpdateDto;
 import com.mask.todolist.controller.dto.Response;
 import com.mask.todolist.model.Event;
 import com.mask.todolist.service.EventService;
@@ -64,6 +67,29 @@ public class EventController {
 			List<Event> list = eventSvc.GetAllEvent(userId);
 
 			return new Response().AddData(list);
+		} catch (Exception e) {
+			return new Response().Error().ErrorMessage(e);
+		}
+
+	}
+
+	/**
+	 * 編輯待辦事項
+	 */
+	@PutMapping("/{eventId}")
+	public Response UpdateEvent(@PathVariable Long eventId, @Valid @RequestBody EventUpdateDto req,
+			BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new Response().Error().ErrorMessage(bindingResult.getAllErrors());
+		}
+
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Long userId = (Long) auth.getPrincipal();
+
+			eventSvc.UpdateEvent(req.title, req.content, eventId, userId);
+
+			return new Response();
 		} catch (Exception e) {
 			return new Response().Error().ErrorMessage(e);
 		}

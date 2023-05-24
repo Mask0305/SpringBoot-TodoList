@@ -92,19 +92,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	 * 確認此次請求是否需要驗證
 	 */
 	public boolean SkipPath(String url) {
-		String[] needCheckURL = {
-				"/user/info",
-				"/user/info/name",
-				"/user/info/password",
-				"/user/logout",
-				// ------
-				"/event/create",
-				"/event",
+		System.out.println(url);
+		String[] skipURL = {
+				"/user/register",
+				"/user/login",
 		};
-		List<String> list = Arrays.asList(needCheckURL);
+		List<String> list = Arrays.asList(skipURL);
 
-		// 反轉boolean，不在的為true
-		return !list.contains(url);
+		return list.contains(url);
 	}
 
 }
