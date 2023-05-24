@@ -97,9 +97,9 @@ public class UserController {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			Long userId = (Long) auth.getPrincipal();
-			System.out.println(userId);
 
 			User user = userSvc.GetUserInfoById(userId);
+
 			return new Response().AddData(user);
 		} catch (Exception e) {
 

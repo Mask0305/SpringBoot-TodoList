@@ -1,19 +1,16 @@
 package com.mask.todolist.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table
 public class User extends BaseModel {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
 
 	/**
 	 * 使用者名稱
@@ -33,6 +30,9 @@ public class User extends BaseModel {
 	@Column
 	private String pwdHash;
 
+	@OneToMany(mappedBy = "user", cascade = { CascadeType.REMOVE })
+	private List<Event> eventList;
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -45,16 +45,16 @@ public class User extends BaseModel {
 		this.pwdHash = pwdHash;
 	}
 
-	public Long getId() {
-		return this.id;
-	}
-
 	public String getName() {
 		return this.name;
 	}
 
 	public String getAccount() {
 		return this.account;
+	}
+
+	public List<Event> getEventList() {
+		return this.eventList;
 	}
 
 	/**
