@@ -67,8 +67,6 @@
             		<artifactId>jjwt</artifactId>
             		<version>0.9.1</version>
         	</dependency>
-
-
 	
 		<!--處理jjwt依賴的DatatypeConverter被標記過時的問題-->
 		<dependency>

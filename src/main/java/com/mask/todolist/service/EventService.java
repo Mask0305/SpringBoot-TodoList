@@ -1,5 +1,7 @@
 package com.mask.todolist.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +34,22 @@ public class EventService {
 			if (savedEvent.getId() == null) {
 				throw new EventException().CreateFail(null);
 			}
-		} catch (EventException e) {
+		} catch (Exception e) {
 			throw new EventException().CreateFail(e);
+		}
+	}
+
+	/**
+	 * 取得使用者所有待辦事項
+	 */
+	public List<Event> GetAllEvent(Long userId) throws Exception {
+		try {
+			var result = eventRepo.findAllByUserId(userId);
+
+			return result;
+		} catch (Exception e) {
+			System.out.println(e);
+			throw e;
 		}
 	}
 

@@ -1,5 +1,7 @@
 package com.mask.todolist.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -20,6 +22,7 @@ public class Event extends BaseModel {
 	 */
 	@ManyToOne
 	@JoinColumn(name = "userId")
+	@JsonIgnore
 	private User user;
 
 	/**
@@ -47,6 +50,10 @@ public class Event extends BaseModel {
 		this.content = content;
 		this.user = user;
 		this.stats = EventStats.ACTION;
+	}
+
+	public Event() {
+
 	}
 
 	public String getTitle() {

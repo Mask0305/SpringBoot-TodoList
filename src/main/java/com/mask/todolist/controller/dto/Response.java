@@ -1,17 +1,18 @@
 package com.mask.todolist.controller.dto;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.validation.ObjectError;
 
+import com.mask.todolist.model.Event;
 import com.mask.todolist.model.User;
 
 public class Response {
 	public String message;
-	public Map<String, String> data = new HashMap<>();
+	// public Map<String, String> data = new HashMap<>();
+	public Object data;
 	public ArrayList<String> error;
 
 	public Response() {
@@ -41,9 +42,13 @@ public class Response {
 	}
 
 	public Response AddData(User user) {
-		this.data.put("id", user.getId().toString());
-		this.data.put("name", user.getName());
-		this.data.put("account", user.getAccount());
+		this.data = user;
+		return this;
+	}
+
+	public Response AddData(List<Event> eventList) {
+		this.data = eventList;
+
 		return this;
 	}
 
