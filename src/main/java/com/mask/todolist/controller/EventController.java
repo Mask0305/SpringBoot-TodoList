@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -88,6 +89,42 @@ public class EventController {
 			Long userId = (Long) auth.getPrincipal();
 
 			eventSvc.UpdateEvent(req.title, req.content, eventId, userId);
+
+			return new Response();
+		} catch (Exception e) {
+			return new Response().Error().ErrorMessage(e);
+		}
+
+	}
+
+	/*
+	 * 刪除待辦事項
+	 */
+	@DeleteMapping("/{eventId}")
+	public Response RemoveEvent(@PathVariable Long eventId) {
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Long userId = (Long) auth.getPrincipal();
+
+			eventSvc.RemoveEvent(eventId, userId);
+
+			return new Response();
+		} catch (Exception e) {
+			return new Response().Error().ErrorMessage(e);
+		}
+
+	}
+
+	/**
+	 * 標記已完成的事項
+	 */
+	@PutMapping("/complete/{eventId}")
+	public Response Complete(@PathVariable Long eventId) {
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Long userId = (Long) auth.getPrincipal();
+
+			eventSvc.CompleteEvent(eventId, userId);
 
 			return new Response();
 		} catch (Exception e) {

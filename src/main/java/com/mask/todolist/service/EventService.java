@@ -66,4 +66,37 @@ public class EventService {
 		eventRepo.save(event);
 	}
 
+	/**
+	 * 刪除待辦事項
+	 */
+	public void RemoveEvent(Long eventId, Long userId) throws Exception {
+		GetEventByIdAndUserId(eventId, userId);
+
+		eventRepo.deleteById(eventId);
+	}
+
+	/**
+	 * 標記已完成的事項
+	 */
+	public void CompleteEvent(Long eventId, Long userId) throws Exception {
+		Event event = GetEventByIdAndUserId(eventId, userId);
+
+		event.setStatusComplete();
+
+		eventRepo.save(event);
+	}
+
+	/**
+	 * 透過eventId & userId取得待辦事項
+	 */
+	public Event GetEventByIdAndUserId(Long eventId, Long userId) throws Exception {
+
+		Event event = eventRepo.findByIdAndUserId(eventId, userId);
+		if (event == null) {
+			throw new EventException().NotFoundEvent(new IllegalArgumentException());
+		}
+
+		return event;
+	}
+
 }
