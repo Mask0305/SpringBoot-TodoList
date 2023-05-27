@@ -58,7 +58,7 @@ public class EventService {
 	 */
 	public void UpdateEvent(String title, String content, Long eventId, Long userId) throws Exception {
 
-		Event event = eventRepo.findByIdAndUserId(eventId, userId);
+		Event event = GetEventByIdAndUserId(eventId, userId);
 
 		event.setTitle(title);
 		event.setContent(content);
