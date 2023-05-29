@@ -3,10 +3,13 @@ package com.mask.todolist.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mask.todolist.exception.error.EventException;
 import com.mask.todolist.model.Event;
+import com.mask.todolist.model.EventStatus;
 import com.mask.todolist.model.User;
 import com.mask.todolist.repository.EventRepo;
 import com.mask.todolist.repository.UserRepo;
@@ -97,6 +100,29 @@ public class EventService {
 		}
 
 		return event;
+	}
+
+	/**
+	 * 搜尋待辦事項
+	 */
+	public List<Event> Search(Long userId, String searchKey, EventStatus status, int page, int size) {
+
+		// page-1符合頁面邏輯
+		// > 0 判斷避免變成負數
+		if (page - 1 >= 0) {
+			page--;
+		}
+
+		// 預設size
+		if (size == 0) {
+			size = 10;
+		}
+
+		Pageable pageable = PageRequest.of(page, size);
+
+		List<Event> list = eventRepo.search(userId, searchKey, status, pageable);
+
+		return list;
 	}
 
 }

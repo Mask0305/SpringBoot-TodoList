@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mask.todolist.controller.dto.EventDto;
+import com.mask.todolist.controller.dto.EventSearchDto;
 import com.mask.todolist.controller.dto.EventUpdateDto;
 import com.mask.todolist.controller.dto.Response;
 import com.mask.todolist.model.Event;
+import com.mask.todolist.model.EventStatus;
 import com.mask.todolist.service.EventService;
 
+import io.jsonwebtoken.lang.Strings;
 import jakarta.validation.Valid;
 
 @RestController
@@ -131,6 +134,45 @@ public class EventController {
 			return new Response().Error().ErrorMessage(e);
 		}
 
+	}
+
+	/*
+	 * 搜尋待辦事項
+	 */
+	@GetMapping("/search")
+	public Response Search(@RequestBody EventSearchDto req) {
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Long userId = (Long) auth.getPrincipal();
+			System.out.println(req.status);
+			if (!Strings.hasText(req.status)) {
+				req.status = EventStatus.NONE.getDesc();
+			}
+
+			List<Event> list = eventSvc.Search(userId, req.searchKey, EventStatus.valueOf(req.status),
+					req.page, req.size);
+
+			return new Response().AddData(list);
+		} catch (Exception e) {
+			return new Response().Error().ErrorMessage(e);
+		}
+	}
+
+	/*
+	 * 取得已完成的待辦事項
+	 */
+	@GetMapping("/complete")
+	public Response GetCompleteEventList(@RequestBody EventSearchDto req) {
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Long userId = (Long) auth.getPrincipal();
+
+			List<Event> list = eventSvc.Search(userId, "", EventStatus.COMPLETE, req.page, req.size);
+
+			return new Response().AddData(list);
+		} catch (Exception e) {
+			return new Response().Error().ErrorMessage(e);
+		}
 	}
 
 }

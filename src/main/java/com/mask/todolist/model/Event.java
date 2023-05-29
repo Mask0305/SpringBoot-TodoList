@@ -40,16 +40,16 @@ public class Event extends BaseModel {
 	/**
 	 * 事件狀態
 	 * 
-	 * @EventStats
+	 * @EventStatus
 	 */
 	@Column
-	private EventStats stats;
+	private EventStatus status;
 
 	public Event(String title, String content, User user) {
 		this.title = title;
 		this.content = content;
 		this.user = user;
-		this.stats = EventStats.ACTION;
+		this.status = EventStatus.ACTION;
 	}
 
 	public Event() {
@@ -68,8 +68,8 @@ public class Event extends BaseModel {
 		return this.user;
 	}
 
-	public EventStats getEventStats() {
-		return this.stats;
+	public EventStatus getEventStatus() {
+		return this.status;
 	}
 
 	public void setTitle(String title) {
@@ -81,35 +81,7 @@ public class Event extends BaseModel {
 	}
 
 	public void setStatusComplete() {
-		this.stats = EventStats.COMPLETE;
-	}
-}
-
-/**
- * 事件狀態
- * @ 0: NONE
- * @ 1: Action 進行中
- * @ 2: Complete 完成
- */
-enum EventStats {
-	NONE(0, "NONE"),
-	ACTION(1, "Action"),
-	COMPLETE(2, "Complete");
-
-	private int stats;
-	private String desc;
-
-	EventStats(int stats, String desc) {
-		this.stats = stats;
-		this.desc = desc;
+		this.status = EventStatus.COMPLETE;
 	}
 
-	public int getStats() {
-		return this.stats;
-	}
-
-	public String getDesc() {
-		return this.desc;
-
-	}
 }
